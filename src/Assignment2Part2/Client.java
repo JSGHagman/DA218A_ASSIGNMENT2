@@ -1,4 +1,5 @@
-package Assignment2Part1;
+package Assignment2Part2;
+
 import java.util.Random;
 
 /**
@@ -17,10 +18,10 @@ public class Client implements Runnable {
         this.clientID = id;
         this.seatManager = mngr;
         numberBooked = 0;
-        /*int max = random.nextInt(1000000);
+        int max = random.nextInt(1000000);
         for (int i = 0; i < max; i++){
         //busy spin
-        }*/
+        }
     }
 
     /**
@@ -39,6 +40,14 @@ public class Client implements Runnable {
 
 
     /**
+     * Will set what seat the client wants to book
+     * @param numberToBook
+     */
+    public void setNumberToBook(int numberToBook) {
+        this.numberToBook = numberToBook;
+    }
+
+    /**
      * This method is ran by each client.
      * Will first check if any seats are open if there isn't any open it will just die immediately
      * If there is an open seat, it will try to book a seat while the client has not booked one yet.
@@ -48,12 +57,13 @@ public class Client implements Runnable {
      */
     @Override
     public void run() {
-        if (seatManager.isAnyOpen()){
-            while (numberBooked < 1) {
-                numberToBook = seatManager.getAnOpenSeat();
+        if(seatManager.isAnyOpen()){
+            while(numberBooked < 1) {
                 boolean success = seatManager.bookSeat(this);
                 if (success) {
                     numberBooked = 1;
+                } if (!seatManager.isAnyOpen()){
+                     numberBooked = 1;
                 }
             }
         }

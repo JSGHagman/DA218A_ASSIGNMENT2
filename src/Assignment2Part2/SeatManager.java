@@ -1,6 +1,7 @@
-package Assignment2Part1;
+package Assignment2Part2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class SeatManager {
@@ -25,6 +26,7 @@ public class SeatManager {
         allSeats = new ArrayList();
         openSeats = new ArrayList();
         logBook = new ArrayList();
+        Collections.synchronizedList(openSeats);
         createSeats();
         setTakenSeats();
         for(int i = 1; i <= maxClients; i++){
@@ -99,17 +101,20 @@ public class SeatManager {
      * @param client
      * @return boolean - true if the client manages to secure a seat
      */
-    public boolean bookSeat(Client client){
+    public synchronized boolean bookSeat(Client client){
         boolean booked = false;
-        for (Seat s : openSeats){
-            if(s.getSeatNbr() == client.getNumberToBook()){
+        if(isAnyOpen()){
+            client.setNumberToBook(getAnOpenSeat());
+            for (Seat s : openSeats){
+                if(s.getSeatNbr() == client.getNumberToBook()){
                     s.setStatus(SeatStatus.OCCUPIED);
                     String update = String.format("Client #%s BOOKED seat #%s", client.getClientID(), s.getSeatNbr());
                     updateLogs(update);
                     booked = true;
-            }else{
-               String failedToBook = String.format("Unsuccessful attempt to book seat #%s by client #%s", s.getSeatNbr() , client.getClientID());
-               updateLogs(failedToBook);
+                }else{
+                    String failedToBook = String.format("Unsuccessful attempt to book seat #%s by client #%s", s.getSeatNbr() , client.getClientID());
+                    updateLogs(failedToBook);
+                }
             }
         }
         return booked;
@@ -136,9 +141,9 @@ public class SeatManager {
     public boolean isAnyOpen(){
         boolean anyOpen = false;
         for(Seat s : openSeats){
-            if(s.getStatus().equals(SeatStatus.AVAILABLE)){
-                anyOpen = true;
-            }
+                if(s.isOpen(s)){
+                    anyOpen = true;
+                }
         }
         return anyOpen;
     }

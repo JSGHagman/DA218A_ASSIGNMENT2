@@ -1,6 +1,6 @@
-package Assignment2Part1;
+package Assignment2Part2;
 
-public class Main {
+public class MainP2 {
 
     public static void main(String[] args) {
         new UserInterface();

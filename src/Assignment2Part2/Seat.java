@@ -1,4 +1,4 @@
-package Assignment2Part1;
+package Assignment2Part2;
 
 public class Seat {
     private SeatStatus status;
@@ -31,6 +31,13 @@ public class Seat {
         return seatNbr;
     }
 
+    public boolean isOpen(Seat s){
+        boolean open = false;
+        if(s.getStatus() == SeatStatus.AVAILABLE){
+            open = true;
+        }
+        return open;
+    }
 
     /**
      * @return String - Returns the number of the seat
